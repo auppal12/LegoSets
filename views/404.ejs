@@ -1,0 +1,44 @@
+<%#/********************************************************************************
+* BTI325 – Assignment 04
+*
+* I declare that this assignment is my own work in accordance with Seneca's
+* Academic Integrity Policy:
+*
+* https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
+*
+* Name: Amitoj Singh Uppal       Student ID: 105186225       Date: 1st November, 2023
+*
+* Published URL: https://prickly-hat-tick.cyclic.app/
+********************************************************************************/ %>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found</title>
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+
+<body>
+  <div>
+    <%- include('partials/navbar', {page:''})%>
+      <div class="hero min-h-screen"
+        style="background-image: url(https://images.unsplash.com/photo-1564228511783-821f2f547f44?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2891&q=80);">
+        <div class="hero-overlay bg-opacity-60"></div>
+        <div class="hero-content text-center text-neutral-content">
+          <div class="max-w-md">
+            <h1 class="mb-5 text-2xl font-bold">
+              <%= message %>
+            </h1> <br>
+            <div>
+              <a href="/"><button class="btn btn-primary text-right">Home</button></a>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+<%#/********************************************************************************
+* BTI325 – Assignment 04
+*
+* I declare that this assignment is my own work in accordance with Seneca's
+* Academic Integrity Policy:
+*
+* https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
+*
+* Name: Amitoj Singh Uppal       Student ID: 105186225       Date: 1st November, 2023
+*
+* Published URL: https://prickly-hat-tick.cyclic.app/
+********************************************************************************/ %>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Info</title>
+    <link rel="stylesheet" href="/css/main.css" />
+    <script>
+        document.addEventListener("DOMContentLoaded", ()=>{
+        /* TODO: "fetch" the data at: https://quotable.io/random and update an element in the DOM with the "content" and "author" */
+        fetch("https://quotable.io/random")
+        .then((quoteResponse) => quoteResponse.json())
+        .then((quoteData) => {
+            const quote_content = `"${quoteData.content}"`;
+            const quote_author = quoteData.author;
+            document.getElementById("quote").textContent = quote_content;
+            document.getElementById("author").textContent = `- ${quote_author}`;
+        })
+        .catch((error) => {
+            console.error("Error fetching quote", error);
+        });
+        });
+    </script>
+</head>
+
+<body>
+    <div>
+        <%- include('partials/navbar', {page:""})%>
+            <div class="container mx-auto">
+                <div class="hero min-h-fit bg-base-200">
+                    <div class="hero-content flex-col">
+                        <h1 class="text-2xl font-bold"> <%= set.name %> </h1>
+                        <p>Below, you will find detailed information.</p>
+                    </div>
+                </div>
+                <br /><br /><br />
+                <br />
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="avatar">
+                        <img class="w-24 rounded-e-sm ring ring-primary ring-offset-base-100 ring-offset-2"
+                            src="<%= set.img_url %>" alt=" Set Image">
+                    </div>
+                    <div class="prose">
+                        <p>
+                            <span class="font-bold">Set Name: </span> <%= set.name %> <br>
+                            <span class="font-bold">Year Released: </span> <%= set.year %> <br>
+                            <span class="font-bold">Theme: </span> <%= set.theme %> <br>
+                            <span class="font-bold">Number of Parts: </span> <%= set.num_parts %> <br><br>
+                            <span id="quote"></span>
+                            <br>
+                            <em id="author"><em>
+                            <br><br>
+                            <a class="btn btn-primary btn-sm" href="#"
+                                onclick="history.back(); return false;">RETURN</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

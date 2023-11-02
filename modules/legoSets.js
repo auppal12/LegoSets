@@ -1,13 +1,14 @@
 /********************************************************************************
-* BTI325 – Assignment 02
+* BTI325 – Assignment 04
 *
 * I declare that this assignment is my own work in accordance with Seneca's
 * Academic Integrity Policy:
 *
 * https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
 *
-* Name: Amitoj Singh Uppal       Student ID: 105186225       Date: 28th Sept, 2023
+* Name: Amitoj Singh Uppal       Student ID: 105186225       Date: 1st November, 2023
 *
+* Published URL: https://prickly-hat-tick.cyclic.app/
 ********************************************************************************/
 
 const setData = require("../data/setData");

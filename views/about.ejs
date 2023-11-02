@@ -1,0 +1,56 @@
+<%#/********************************************************************************
+* BTI325 – Assignment 04
+*
+* I declare that this assignment is my own work in accordance with Seneca's
+* Academic Integrity Policy:
+*
+* https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
+*
+* Name: Amitoj Singh Uppal       Student ID: 105186225       Date: 1st November, 2023
+*
+* Published URL: https://prickly-hat-tick.cyclic.app/
+********************************************************************************/ %>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About</title>
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+
+<body>
+  <div>
+    <%- include('partials/navbar', {page:'/about'})%>
+      <div class="container mx-auto">
+        <div class="hero min-h-fit bg-base-200">
+          <div class="hero-content flex-col lg:flex-row-reverse">
+            <img src="https://wallpapers.com/images/hd/danbo-box-robot-playing-soccer-hd-pd3biabb91j84brd.webp"
+              class="max-w-sm rounded-lg shadow-2xl" />
+            <div>
+              <h1 class="text-2xl font-bold">I'm glad you wanted to know about me.</h1>
+            </div>
+          </div>
+        </div>
+        <br /><br /><br />
+        <br />
+        <div class="grid">
+          <div class="flex flex-col w-full lg:flex-row">
+            <div class="grid flex-grow h-72 bg-base-300 rounded-box place-items-center">
+              <img src="https://images5.alphacoders.com/770/770520.jpg" class="max-w-md rounded-lg shadow-2xl" />
+            </div>
+            <div class="divider lg:divider-horizontal"></div>
+            <div class="grid flex-grow h-72 card bg-base-300 rounded-box text-center place-items-center">
+              <p>Hello, My name is Amitoj. I'm in BSD program at Seneca College. <br> <br>
+                I'm a soccer fan. My favorite soccer club is Real Madrid, Spain. <br> <br>
+                It's one of the most famous and well-renowed club of this century.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

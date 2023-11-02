@@ -1,0 +1,75 @@
+<%#/********************************************************************************
+* BTI325 – Assignment 04
+*
+* I declare that this assignment is my own work in accordance with Seneca's
+* Academic Integrity Policy:
+*
+* https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
+*
+* Name: Amitoj Singh Uppal       Student ID: 105186225       Date: 1st November, 2023
+*
+* Published URL: https://prickly-hat-tick.cyclic.app/
+********************************************************************************/ %>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All sets</title>
+    <link rel="stylesheet" href="/css/main.css" />
+</head>
+
+<body>
+    <div>
+        <%- include('partials/navbar', {page:'/lego/sets'})%>
+
+            <div class="hero bg-base-200 rounded-lg p-6">
+                <div class="hero-content text-center ">
+                    <div class="max-w-md">
+                        <h1 class="text-5xl font-bold">Collection</h1>
+
+                        <p class="py-6">Browse the entire collection.
+                            Click the theme to filter by themes such as:
+                            <a href="/lego/sets?theme=Books" class="btn btn-primary btn-sm">Books</a>
+                            <a href="/lego/sets?theme=Playhouse" class="btn btn-primary btn-sm">Playhouse</a>
+                            <a href="/lego/sets?theme=Supplemental" class="btn btn-primary btn-sm">Supplemental</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto overflow-y-hidden">
+                <table class="table table-zebra">
+
+                    <tbody>
+                        <% sets.forEach(function(set) { %>
+                            <tr>
+                                <div class="avatar">
+                                    <td>
+                                        <img src="<%= set.img_url %>" alt="image"
+                                            class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                                    </td>
+                                </div>
+                                <td>
+                                    <%= set.name %> | <a href="/lego/sets?theme=<%= set.theme %>"
+                                            class="btn  mt-2 btn-xs">
+                                            <%= set.theme %>
+                                        </a>
+                                </td>
+                                <td><span class="font-bold">Year: </span>
+                                    <%= set.year %> - <span class="font-bold">Parts:</span>
+                                        <%= set.num_parts %>
+                                </td>
+                                <th>
+                                    <a href="/lego/sets/<%= set.set_num %>" class="btn btn-xs">details</a>
+                                </th>
+                            </tr>
+                            <% }); %>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+</body>
+</html>
