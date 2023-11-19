@@ -1,19 +1,17 @@
 /********************************************************************************
-* BTI325 – Assignment 04
+* BTI325 – Assignment 05
 *
 * I declare that this assignment is my own work in accordance with Seneca's
 * Academic Integrity Policy:
 *
 * https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
 *
-* Name: Amitoj Singh Uppal       Student ID: 105186225       Date: 1st November, 2023
+* Name: Amitoj Singh Uppal       Student ID: 105186225       Date: 18 November, 2023
 *
 * Published URL: https://prickly-hat-tick.cyclic.app/
 ********************************************************************************/
-
 const express = require('express');
 const legoData = require('./modules/legoSets');
-
 const app = express();
 
 const HTTP_PORT = process.env.PORT || 8080;
@@ -21,6 +19,60 @@ const HTTP_PORT = process.env.PORT || 8080;
 app.set('view engine', 'ejs');
 
 app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/lego/addSet', (req, res) => {
+    legoData.getAllThemes()
+        .then(themeData => {
+            res.render('addSet', { themes: themeData });
+        })
+        .catch((err) => {
+            res.render("500", { message: `I'm sorry, but we have encountered the following error: ${err}` });
+        });
+});
+
+app.post('/lego/addSet', (req, res) => {
+    legoData.addSet(req.body)
+        .then(() => {
+            res.redirect('/lego/sets');
+        })
+        .catch((err) => {
+            res.render("500", { message: `I'm sorry, but we have encountered the following error: ${err}` });
+        });
+});
+
+app.get('/lego/editSet/:num', async (req, res) => {
+    let setNum = req.params.num;
+    try {
+        let setData = await legoData.getSetByNum(setNum);
+        let themeData = await legoData.getAllThemes();
+        res.render('editSet', { themes: themeData, set: setData });
+    } catch (err) {
+        res.status(404).render("404", {message: err.message });
+    }
+});
+
+app.post('/lego/editSet', async (req, res) => {
+    let setNum = req.body.set_num;
+    let setData = req.body;
+    try {
+        await legoData.editSet(setNum, setData);
+        res.redirect('/lego/sets');
+    } catch (err) {
+        res.render("500", { message: `I'm sorry, but we have encountered the following error: ${err}` });
+    }
+});
+
+app.get('/lego/deleteSet/:num', async (req, res) => {
+    let setNum = req.params.num;
+    try {
+        await legoData.deleteSet(setNum);
+        res.redirect('/lego/sets');
+    } catch (err) {
+        res.render("500", { message: `I'm sorry, but we have encountered the following error: ${err.message}` });
+    }
+});
+
 app.get('/', (req, res) => {
     res.render("home");
 });
