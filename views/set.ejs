@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="/css/main.css" />
     <script>
         document.addEventListener("DOMContentLoaded", ()=>{
-        /* TODO: "fetch" the data at: https://quotable.io/random and update an element in the DOM with the "content" and "author" */
         fetch("https://quotable.io/random")
         .then((quoteResponse) => quoteResponse.json())
         .then((quoteData) => {
