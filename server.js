@@ -12,6 +12,9 @@
 ********************************************************************************/
 const express = require('express');
 const legoData = require('./modules/legoSets');
+const authData = require('./modules/auth-service');
+const clientSessions = require('client-sessions');
+
 const app = express();
 
 const HTTP_PORT = process.env.PORT || 8080;
@@ -20,8 +23,65 @@ app.set('view engine', 'ejs');
 
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
+app.use(
+    clientSessions({
+      cookieName: 'session', // this is the object name that will be added to 'req'
+      secret: process.env.SESSION_SECRET, // this should be a long un-guessable string.
+      duration: 3 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
+      activeDuration: 1000 * 60, // the session will be extended by this many ms each request (1 minute)
+    })
+);
 
-app.get('/lego/addSet', (req, res) => {
+app.use((req, res, next) => {
+    res.locals.session = req.session;
+    next();
+});
+
+function ensureLogin(req, res, next) {
+    if (!req.session || !req.session.user) {
+        res.redirect('/login');
+    } else {
+        next();
+    }
+}
+
+app.get('/login', (req, res) => {
+    res.render('login', { errorMessage:"", userName:""});
+});
+
+app.get('/register', (req, res) => {
+    res.render('register', { successMessage:"", errorMessage:"", userName:""});
+});
+
+app.post('/register', (req, res) => {
+    authData.registerUser(req.body)
+    .then(() => res.render('register', { successMessage: 'User created' }))
+    .catch((err) => res.render('register', { successMessage:"", errorMessage: err, userName: req.body.userName }));
+});
+
+app.post('/login', (req, res) => {
+    req.body.userAgent = req.get('User-Agent');
+    authData.checkUser(req.body).then((user) => {
+        req.session.user = {
+            userName: user.userName,
+            email: user.email,
+            loginHistory: user.loginHistory,
+        };
+        res.redirect('/lego/sets');
+    })
+    .catch((err) => res.render('login', { errorMessage: err, userName: req.body.userName }));
+});
+
+app.get('/logout', (req, res) => {
+    req.session.reset();
+    res.redirect('/');
+});
+
+app.get('/userHistory', ensureLogin, (req, res) => {
+    res.render('userHistory');
+});
+
+app.get('/lego/addSet', ensureLogin, (req, res) => {
     legoData.getAllThemes()
         .then(themeData => {
             res.render('addSet', { themes: themeData });
@@ -31,7 +91,7 @@ app.get('/lego/addSet', (req, res) => {
         });
 });
 
-app.post('/lego/addSet', (req, res) => {
+app.post('/lego/addSet', ensureLogin, (req, res) => {
     legoData.addSet(req.body)
         .then(() => {
             res.redirect('/lego/sets');
@@ -41,7 +101,7 @@ app.post('/lego/addSet', (req, res) => {
         });
 });
 
-app.get('/lego/editSet/:num', async (req, res) => {
+app.get('/lego/editSet/:num', ensureLogin, async (req, res) => {
     let setNum = req.params.num;
     try {
         let setData = await legoData.getSetByNum(setNum);
@@ -52,7 +112,7 @@ app.get('/lego/editSet/:num', async (req, res) => {
     }
 });
 
-app.post('/lego/editSet', async (req, res) => {
+app.post('/lego/editSet', ensureLogin, async (req, res) => {
     let setNum = req.body.set_num;
     let setData = req.body;
     try {
@@ -63,7 +123,7 @@ app.post('/lego/editSet', async (req, res) => {
     }
 });
 
-app.get('/lego/deleteSet/:num', async (req, res) => {
+app.get('/lego/deleteSet/:num', ensureLogin, async (req, res) => {
     let setNum = req.params.num;
     try {
         await legoData.deleteSet(setNum);
@@ -114,8 +174,12 @@ app.use((req, res) => {
     res.status(404).render("404", { message: "I'm sorry, we're unable to find what you're looking for" });
 });
 
-legoData.initialize().then(() => {
-    app.listen(HTTP_PORT, () => {
-        console.log(`Server is running on port ${HTTP_PORT}`);
+legoData.initialize()
+.then(authData.initialize)
+.then(function(){
+    app.listen(HTTP_PORT, function(){
+        console.log(`app listening on: ${HTTP_PORT}`);
     });
+}).catch(function(err){
+    console.log(`unable to start server: ${err}`);
 });
