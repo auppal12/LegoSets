@@ -1,23 +1,11 @@
-/********************************************************************************
-* BTI325 – Assignment 06
-*
-* I declare that this assignment is my own work in accordance with Seneca's
-* Academic Integrity Policy:
-*
-* https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
-*
-* Name: Amitoj Singh Uppal       Student ID: 105186225       Date: 07 December, 2023
-*
-* Published URL: https://prickly-hat-tick.cyclic.app/
-********************************************************************************/
 const express = require('express');
-const legoData = require('./modules/legoSets');
-const authData = require('./modules/auth-service');
+const legoData = require('../modules/legoSets');
+const authData = require('../modules/auth-service');
 const clientSessions = require('client-sessions');
 
 const app = express();
 
-const HTTP_PORT = process.env.PORT || 8080;
+const HTTP_PORT = process.env.PORT || 3000;
 
 app.set('view engine', 'ejs');
 
@@ -25,10 +13,10 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(
     clientSessions({
-      cookieName: 'session', // this is the object name that will be added to 'req'
-      secret: process.env.SESSION_SECRET, // this should be a long un-guessable string.
-      duration: 3 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
-      activeDuration: 1000 * 60, // the session will be extended by this many ms each request (1 minute)
+        cookieName: 'session', // this is the object name that will be added to 'req'
+        secret: process.env.SESSION_SECRET, // this should be a long un-guessable string.
+        duration: 3 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
+        activeDuration: 1000 * 60, // the session will be extended by this many ms each request (1 minute)
     })
 );
 
@@ -46,17 +34,17 @@ function ensureLogin(req, res, next) {
 }
 
 app.get('/login', (req, res) => {
-    res.render('login', { errorMessage:"", userName:""});
+    res.render('login', { errorMessage: "", userName: "" });
 });
 
 app.get('/register', (req, res) => {
-    res.render('register', { successMessage:"", errorMessage:"", userName:""});
+    res.render('register', { successMessage: "", errorMessage: "", userName: "" });
 });
 
 app.post('/register', (req, res) => {
     authData.registerUser(req.body)
-    .then(() => res.render('register', { successMessage: 'User created' }))
-    .catch((err) => res.render('register', { successMessage:"", errorMessage: err, userName: req.body.userName }));
+        .then(() => res.render('register', { successMessage: 'User created' }))
+        .catch((err) => res.render('register', { successMessage: "", errorMessage: err, userName: req.body.userName }));
 });
 
 app.post('/login', (req, res) => {
@@ -69,7 +57,7 @@ app.post('/login', (req, res) => {
         };
         res.redirect('/lego/sets');
     })
-    .catch((err) => res.render('login', { errorMessage: err, userName: req.body.userName }));
+        .catch((err) => res.render('login', { errorMessage: err, userName: req.body.userName }));
 });
 
 app.get('/logout', (req, res) => {
@@ -108,7 +96,7 @@ app.get('/lego/editSet/:num', ensureLogin, async (req, res) => {
         let themeData = await legoData.getAllThemes();
         res.render('editSet', { themes: themeData, set: setData });
     } catch (err) {
-        res.status(404).render("404", {message: err.message });
+        res.status(404).render("404", { message: err.message });
     }
 });
 
@@ -175,11 +163,11 @@ app.use((req, res) => {
 });
 
 legoData.initialize()
-.then(authData.initialize)
-.then(function(){
-    app.listen(HTTP_PORT, function(){
-        console.log(`app listening on: ${HTTP_PORT}`);
+    .then(authData.initialize)
+    .then(function () {
+        app.listen(HTTP_PORT, function () {
+            console.log(`app listening on: ${HTTP_PORT}`);
+        });
+    }).catch(function (err) {
+        console.log(`unable to start server: ${err}`);
     });
-}).catch(function(err){
-    console.log(`unable to start server: ${err}`);
-});
