@@ -5,7 +5,7 @@ const clientSessions = require('client-sessions');
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
+const HTTP_PORT = process.env.PORT || 3000;
 
 app.set('view engine', 'ejs');
 
@@ -162,19 +162,12 @@ app.use((req, res) => {
     res.status(404).render("404", { message: "I'm sorry, we're unable to find what you're looking for" });
 });
 
-async function startServer() {
-    try {
-        // Initialize your services
-        await legoData.initialize();
-        await authData.initialize();
-        // Start listening for requests
-        app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
+legoData.initialize()
+    .then(authData.initialize)
+    .then(function () {
+        app.listen(HTTP_PORT, function () {
+            console.log(`app listening on: ${HTTP_PORT}`);
         });
-    } catch (error) {
-        console.error(`Failed to start the server: ${error}`);
-    }
-}
-
-// Start the server
-startServer();
+    }).catch(function (err) {
+        console.log(`unable to start server: ${err}`);
+    });
