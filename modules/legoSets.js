@@ -1,15 +1,3 @@
-/********************************************************************************
-* BTI325 – Assignment 05
-*
-* I declare that this assignment is my own work in accordance with Seneca's
-* Academic Integrity Policy:
-*
-* https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
-*
-* Name: Amitoj Singh Uppal       Student ID: 105186225       Date: 18 November, 2023
-*
-* Published URL: https://prickly-hat-tick.cyclic.app/
-********************************************************************************/
 require('dotenv').config();
 const Sequelize = require('sequelize');
 
@@ -33,8 +21,8 @@ const Theme = sequelize.define(
         name: Sequelize.STRING,
     },
     {
-      createdAt: false, // disable createdAt
-      updatedAt: false, // disable updatedAt
+        createdAt: false, // disable createdAt
+        updatedAt: false, // disable updatedAt
     }
 );
 
@@ -52,12 +40,12 @@ const Set = sequelize.define(
         img_url: Sequelize.STRING,
     },
     {
-      createdAt: false, // disable createdAt
-      updatedAt: false, // disable updatedAt
+        createdAt: false, // disable createdAt
+        updatedAt: false, // disable updatedAt
     }
 );
 
-Set.belongsTo(Theme, {foreignKey: 'theme_id'});
+Set.belongsTo(Theme, { foreignKey: 'theme_id' });
 
 
 function initialize() {
@@ -108,7 +96,8 @@ function getSetsByTheme(theme) {
                 '$Theme.name$': {
                     [Sequelize.Op.iLike]: `%${theme}%`
                 }
-            }})
+            }
+        })
             .then((themedSets) => {
                 if (themedSets.length > 0) {
                     resolve(themedSets);
@@ -143,7 +132,7 @@ function addSet(setData) {
             num_parts: setData.num_parts,
             theme_id: setData.theme_id,
             img_url: setData.img_url,
-            })
+        })
             .then(() => {
                 resolve();
             })
@@ -156,7 +145,7 @@ function addSet(setData) {
 function editSet(set_num, setData) {
     return new Promise(async (resolve, reject) => {
         try {
-            let exist = await Set.findOne({ where: { set_num: set_num }});
+            let exist = await Set.findOne({ where: { set_num: set_num } });
             if (exist) {
                 await exist.update(setData);
                 resolve();
@@ -172,16 +161,17 @@ function editSet(set_num, setData) {
 function deleteSet(set_num) {
     return new Promise(async (resolve, reject) => {
         try {
-            let exist = await Set.findOne({ where: { set_num: set_num }});
+            let exist = await Set.findOne({ where: { set_num: set_num } });
             if (exist) {
                 await exist.destroy();
                 resolve();
             }
-            else{
-                reject("Not able to find the Set")}
+            else {
+                reject("Not able to find the Set")
             }
-        catch(err){
-            reject (err.errors[0].message)
+        }
+        catch (err) {
+            reject(err.errors[0].message)
         }
     });
 }

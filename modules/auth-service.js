@@ -1,15 +1,3 @@
-/********************************************************************************
-* BTI325 – Assignment 06
-*
-* I declare that this assignment is my own work in accordance with Seneca's
-* Academic Integrity Policy:
-*
-* https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
-*
-* Name: Amitoj Singh Uppal       Student ID: 105186225       Date: 07 December, 2023
-*
-* Published URL: https://prickly-hat-tick.cyclic.app/
-********************************************************************************/
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 
@@ -21,10 +9,10 @@ let userSchema = new Schema({
     password: String,
     email: String,
     loginHistory: [
-    {
-        dateTime: Date,
-        userAgent: String
-    }
+        {
+            dateTime: Date,
+            userAgent: String
+        }
     ]
 });
 
@@ -60,11 +48,11 @@ module.exports.registerUser = function (userData) {
                                 reject(`There was an error creating the user: ${err}`);
                             }
                         });
-                    })
-                    .catch(err => {
-                        console.log(err);
-                        reject("There was an error encrypting the password");
-                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                    reject("There was an error encrypting the password");
+                });
         } else {
             reject("Passwords do not match");
         }
@@ -80,20 +68,20 @@ module.exports.checkUser = function (userData) {
 
                 } else {
                     bcrypt.compare(userData.password, users[0].password)
-                    .then(hashmatched=>{
-                        if(hashmatched){
-                            if (users[0].loginHistory.length === 8) {
-                                users[0].loginHistory.pop();
+                        .then(hashmatched => {
+                            if (hashmatched) {
+                                if (users[0].loginHistory.length === 8) {
+                                    users[0].loginHistory.pop();
+                                }
+                                users[0].loginHistory.unshift({ dateTime: (new Date()).toString(), userAgent: userData.userAgent });
+                                User.updateOne({ userName: users[0].userName }, { $set: { loginHistory: users[0].loginHistory } })
+                                    .then(() => resolve(users[0]))
+                                    .catch(err => reject(`There was an error verifying the user: ${err}`));
+                            } else {
+                                reject(`Incorrect Password for user: ${userData.userName}`);
                             }
-                            users[0].loginHistory.unshift({ dateTime: (new Date()).toString(), userAgent: userData.userAgent });
-                            User.updateOne({ userName: users[0].userName }, { $set: { loginHistory: users[0].loginHistory } })
-                                .then(() => resolve(users[0]))
-                                .catch(err => reject(`There was an error verifying the user: ${err}`));
-                        }else{
-                            reject(`Incorrect Password for user: ${userData.userName}`);
-                        }
-                    })
-                    .catch(err => reject(`Error occured comparing passwords: ${err}`));
+                        })
+                        .catch(err => reject(`Error occured comparing passwords: ${err}`));
                 }
             })
             .catch(() => reject("Unable to find user: " + userData.userName));
