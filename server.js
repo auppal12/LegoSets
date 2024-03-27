@@ -162,8 +162,8 @@ app.use((req, res) => {
     res.status(404).render("404", { message: "I'm sorry, we're unable to find what you're looking for" });
 });
 
-legoData.initialize()
-    .then(authData.initialize)
+authData.initialize()
+    .then(legoData.initialize)
     .then(function () {
         app.listen(HTTP_PORT, function () {
             console.log(`app listening on: ${HTTP_PORT}`);
