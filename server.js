@@ -162,12 +162,19 @@ app.use((req, res) => {
     res.status(404).render("404", { message: "I'm sorry, we're unable to find what you're looking for" });
 });
 
-legoData.initialize()
-    .then(authData.initialize)
-    .then(function () {
-        app.listen(HTTP_PORT, function () {
-            console.log(`app listening on: ${HTTP_PORT}`);
+async function startServer() {
+    try {
+        // Initialize your services
+        await legoData.initialize();
+        await authData.initialize();
+        // Start listening for requests
+        app.listen(HTTP_PORT, () => {
+            console.log(`Server is running on port ${HTTP_PORT}`);
         });
-    }).catch(function (err) {
-        console.log(`unable to start server: ${err}`);
-    });
+    } catch (error) {
+        console.error(`Failed to start the server: ${error}`);
+    }
+}
+
+// Start the server
+startServer();
