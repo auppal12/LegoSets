@@ -164,10 +164,10 @@ app.use((req, res) => {
 
 legoData.initialize()
     .then(authData.initialize)
-    .then(function () {
-        app.listen(HTTP_PORT, function () {
+    .then(() =>
+        app.listen(HTTP_PORT, () => {
             console.log(`app listening on: ${HTTP_PORT}`);
-        });
-    }).catch(function (err) {
+        })
+    ).catch(function (err) {
         console.log(`unable to start server: ${err}`);
     });
